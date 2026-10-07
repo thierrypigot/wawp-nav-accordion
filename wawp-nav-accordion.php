@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       WAW Nav Accordion
  * Plugin URI:        https://github.com/thierrypigot/wawp-nav-accordion
- * Description:       Collapsible submenus in the mobile overlay of the core Navigation block, driven by the core interactivity store. No custom JavaScript.
- * Version:           0.1.0
+ * Description:       Collapsible submenus in the mobile overlay of the core Navigation block, driven by the core interactivity store, plus a one-line focus fix.
+ * Version:           0.1.1
  * Author:            WeAre[WP]
  * Author URI:        https://www.wearewp.pro
  * License:           GPL-2.0-or-later
@@ -40,6 +40,11 @@
  * Les parents sans lien (URL vide ou « # ») perdent leur `href` et reçoivent
  * la même action que le chevron : toucher l'intitulé ouvre le sous-menu.
  *
+ * Seul ajout JavaScript : `assets/js/view.js` (store `wawp/nav-accordion`)
+ * empêche l'appui de déplacer le focus dans l'overlay. Sans lui, le
+ * sous-menu ouvert se replie dès l'appui, la liste remonte et le clic tombe
+ * à côté de sa cible.
+ *
  * DÉGRADATION
  * ===========
  * La directive n'est remplacée que si elle vaut exactement la valeur connue.
@@ -50,7 +55,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WAWP_NAV_ACCORDION_VERSION', '0.1.0' );
+define( 'WAWP_NAV_ACCORDION_VERSION', '0.1.1' );
 
 // Mises à jour depuis les releases GitHub (zip publié par
 // .github/workflows/release.yml à chaque tag vX.Y.Z).
@@ -80,7 +85,13 @@ const WAWP_NAV_ACCORDION_BINDING = 'state.isMenuOpen';
  */
 const WAWP_NAV_ACCORDION_CLASS = 'wawp-nav-accordion';
 
+/**
+ * Directive qui garde le focus en place à l'appui (cf. assets/js/view.js).
+ */
+const WAWP_NAV_ACCORDION_KEEP_FOCUS = 'wawp/nav-accordion::actions.keepFocus';
+
 add_action( 'init', 'wawp_nav_accordion_register_style' );
+add_action( 'init', 'wawp_nav_accordion_register_script_module' );
 add_filter( 'render_block_core/navigation', 'wawp_nav_accordion_render_navigation', 10, 2 );
 
 /**
@@ -97,6 +108,20 @@ function wawp_nav_accordion_register_style() {
 			'path'   => plugin_dir_path( __FILE__ ) . 'assets/css/overlay.css',
 			'ver'    => WAWP_NAV_ACCORDION_VERSION,
 		)
+	);
+}
+
+/**
+ * Enregistre le module JS, chargé seulement quand un menu est traité.
+ *
+ * @since 0.1.1
+ */
+function wawp_nav_accordion_register_script_module() {
+	wp_register_script_module(
+		'wawp-nav-accordion-view',
+		plugins_url( 'assets/js/view.js', __FILE__ ),
+		array( '@wordpress/interactivity' ),
+		WAWP_NAV_ACCORDION_VERSION
 	);
 }
 
@@ -153,6 +178,7 @@ function wawp_nav_accordion_render_navigation( $block_content, $block ) {
 
 			if ( WAWP_NAV_ACCORDION_CORE_BINDING === $tags->get_attribute( 'data-wp-bind--aria-expanded' ) ) {
 				$tags->set_attribute( 'data-wp-bind--aria-expanded', WAWP_NAV_ACCORDION_BINDING );
+				$tags->set_attribute( 'data-wp-on--mousedown', WAWP_NAV_ACCORDION_KEEP_FOCUS );
 				++$rebound;
 			}
 			continue;
@@ -169,6 +195,7 @@ function wawp_nav_accordion_render_navigation( $block_content, $block ) {
 				$tags->remove_attribute( 'href' );
 				$tags->set_attribute( 'tabindex', '-1' );
 				$tags->set_attribute( 'data-wp-on--click', 'actions.toggleMenuOnClick' );
+				$tags->set_attribute( 'data-wp-on--mousedown', WAWP_NAV_ACCORDION_KEEP_FOCUS );
 			}
 		}
 	}
@@ -176,6 +203,8 @@ function wawp_nav_accordion_render_navigation( $block_content, $block ) {
 	if ( 0 === $rebound ) {
 		return $block_content;
 	}
+
+	wp_enqueue_script_module( 'wawp-nav-accordion-view' );
 
 	$tags->seek( 'nav' );
 	$tags->add_class( WAWP_NAV_ACCORDION_CLASS );

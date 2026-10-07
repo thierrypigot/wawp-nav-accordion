@@ -1,6 +1,6 @@
 # WAW Nav Accordion
 
-Sous-menus repliables dans l'overlay mobile du bloc Navigation de WordPress, en s'appuyant sur le store Interactivity du cœur (`core/navigation`). Aucun JavaScript maison.
+Sous-menus repliables dans l'overlay mobile du bloc Navigation de WordPress, en s'appuyant sur le store Interactivity du cœur (`core/navigation`). Seul ajout JavaScript : une action d'une ligne qui garde le focus en place à l'appui.
 
 ## Le problème
 
@@ -11,6 +11,7 @@ Dans l'overlay mobile, le cœur lie `aria-expanded` des chevrons à `state.isSub
 | Brique | Rôle |
 |---|---|
 | Filtre `render_block_core/navigation` | Relie chaque chevron à `state.isMenuOpen` (état réel du sous-menu). Retire le `href` des parents sans lien (vide ou `#`) et leur donne l'action `toggleMenuOnClick`. Pose la classe `wawp-nav-accordion` sur le `<nav>`. |
+| `assets/js/view.js` | Store `wawp/nav-accordion`, action `keepFocus` sur `mousedown` (chevrons et intitulés, overlay ouvert seulement) : empêche l'appui de déplacer le focus. Sans elle, le cœur referme le sous-menu ouvert dès l'appui (`focusout`), la liste remonte et le clic tombe à côté. Le focus est déplacé au clic par `toggleMenuOnClick`. |
 | `assets/css/overlay.css` | Replie les sous-menus dans `.is-menu-open` sauf si le chevron est `aria-expanded="true"`, affiche le chevron, cible tactile de 44 px. Chargée via `wp_enqueue_block_style()`, seulement avec le bloc. |
 
 Tout le reste vient du cœur : un seul ensemble ouvert à la fois (fermeture quand le focus quitte le sous-menu), Échap, tout replié à l'ouverture, ordinateur inchangé.

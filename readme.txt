@@ -4,11 +4,11 @@ Tags: navigation, mobile menu, accordion, submenu, accessibility
 Requires at least: 6.9
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Collapsible submenus in the mobile overlay of the core Navigation block. Uses the core interactivity store: no custom JavaScript.
+Collapsible submenus in the mobile overlay of the core Navigation block. Uses the core interactivity store, plus a one-line focus fix.
 
 == Description ==
 
@@ -27,6 +27,8 @@ This plugin makes the overlay submenus collapsible, while letting WordPress do t
 
 Core binds the overlay toggles to `state.isSubmenuOpen`, which is true for every submenu while the overlay is open. The plugin rebinds them, at render time, to `state.isMenuOpen`, which already holds the real state of each submenu. A small stylesheet, loaded only with the Navigation block, collapses the submenus whose toggle is not expanded.
 
+One tiny script module (store `wawp/nav-accordion`) prevents a press from moving focus inside the overlay. Otherwise core closes the open submenu on press (focus out), the list shifts up, and the release lands on another element: the tap is lost.
+
 If a future WordPress version changes the core directive, the plugin leaves the markup untouched and the default behavior comes back. Nothing breaks.
 
 = Filter =
@@ -40,6 +42,9 @@ If a future WordPress version changes the core directive, the plugin leaves the 
 The stylesheet only handles behavior (collapse, chevron visibility, 44px touch target). Every rule is scoped under `.wawp-nav-accordion .is-menu-open`. Add one class to your selectors (e.g. `.site-header`) to override it.
 
 == Changelog ==
+
+= 0.1.1 =
+* Fix: with a submenu open (especially level 2 or 3), tapping another parent's toggle or label did nothing. The press moved focus, core closed the open submenu, the list shifted and the click landed elsewhere. A `mousedown` action now keeps focus in place inside the overlay; `toggleMenuOnClick` moves it on click.
 
 = 0.1.0 =
 * Add: overlay submenu toggles bound to the real submenu state (`state.isMenuOpen`).
