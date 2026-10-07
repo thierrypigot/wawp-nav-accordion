@@ -55,6 +55,4 @@ git push origin main --tags
 
 3. La GitHub Action `.github/workflows/release.yml` vérifie que le tag et les 3 versions concordent, construit le zip (`git archive`, exclusions dans `.gitattributes`) et publie la release. Les sites voient la mise à jour dans Extensions.
 
-Zip local, pour une installation manuelle : `python build-zip.py` (`dist/wawp-nav-accordion-{version}.zip`).
-
-**Dépôt privé** : plugin-update-checker ne peut pas lire les releases sans jeton. Soit le dépôt est public (comme `waw-plan-du-site`), soit chaque site déclare un jeton GitHub en lecture seule.
+Installation manuelle : télécharger `wawp-nav-accordion.zip` depuis la page Releases du dépôt.
