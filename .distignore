@@ -1,0 +1,14 @@
+.distignore
+.git/
+.gitignore
+.gitattributes
+.claude/
+.idea/
+.vscode/
+README.md
+build-zip.py
+dist/
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
