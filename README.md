@@ -40,10 +40,20 @@ add_filter( 'wawp_nav_accordion_enabled', function ( $enabled, $block ) {
 
 La CSS du plugin ne gère que le comportement. Toutes ses règles sont sous `.wawp-nav-accordion .is-menu-open` ; un thème les surcharge en ajoutant une classe (ex. `.site-header`).
 
-## Livraison
+## Releases
+
+Mises à jour automatiques sur les sites via [plugin-update-checker](https://github.com/YahnisElsts/plugin-update-checker) v5, qui lit les releases GitHub de ce dépôt.
+
+1. Bumper la version dans 3 endroits : en-tête `Version:` et constante `WAWP_NAV_ACCORDION_VERSION` (`wawp-nav-accordion.php`), `Stable tag` (`readme.txt`). Ajouter l'entrée du changelog dans `readme.txt`.
+2. Commit, puis tag et push :
 
 ```powershell
-python build-zip.py   # dist/wawp-nav-accordion-{version}.zip
+git tag v0.1.1
+git push origin main --tags
 ```
 
-Version à tenir à jour dans 3 endroits : en-tête `Version:` et constante `WAWP_NAV_ACCORDION_VERSION` (`wawp-nav-accordion.php`), `Stable tag` (`readme.txt`).
+3. La GitHub Action `.github/workflows/release.yml` vérifie que le tag et les 3 versions concordent, construit le zip (`git archive`, exclusions dans `.gitattributes`) et publie la release. Les sites voient la mise à jour dans Extensions.
+
+Zip local, pour une installation manuelle : `python build-zip.py` (`dist/wawp-nav-accordion-{version}.zip`).
+
+**Dépôt privé** : plugin-update-checker ne peut pas lire les releases sans jeton. Soit le dépôt est public (comme `waw-plan-du-site`), soit chaque site déclare un jeton GitHub en lecture seule.

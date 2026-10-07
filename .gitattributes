@@ -1,6 +1,8 @@
+# Fichiers exclus du zip de release (git archive).
 * text=auto eol=lf
-/.gitattributes export-ignore
-/.gitignore export-ignore
-/.distignore export-ignore
-/README.md export-ignore
-/build-zip.py export-ignore
+/.github/        export-ignore
+/.gitattributes  export-ignore
+/.gitignore      export-ignore
+/.distignore     export-ignore
+/README.md       export-ignore
+/build-zip.py    export-ignore

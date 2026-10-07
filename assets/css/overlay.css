@@ -56,7 +56,6 @@
 .wawp-nav-accordion .is-menu-open .wp-block-navigation__responsive-container-content .has-child:not(.open-always) > .wp-block-navigation__submenu-icon.wp-block-navigation-submenu__toggle {
 	width: 2.75rem;
 	height: 2.75rem;
-	margin-block: -0.5rem;
 	cursor: pointer;
 }
 

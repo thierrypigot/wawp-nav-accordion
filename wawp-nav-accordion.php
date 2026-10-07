@@ -52,6 +52,17 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'WAWP_NAV_ACCORDION_VERSION', '0.1.0' );
 
+// Mises à jour depuis les releases GitHub (zip publié par
+// .github/workflows/release.yml à chaque tag vX.Y.Z).
+require_once plugin_dir_path( __FILE__ ) . 'plugin-update-checker/plugin-update-checker.php';
+
+$wawp_nav_accordion_update_checker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+	'https://github.com/thierrypigot/wawp-nav-accordion/',
+	__FILE__,
+	'wawp-nav-accordion'
+);
+$wawp_nav_accordion_update_checker->getVcsApi()->enableReleaseAssets();
+
 /**
  * Valeur de la directive posée par le cœur sur les chevrons de sous-menu.
  *
